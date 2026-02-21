@@ -232,7 +232,7 @@ export function Hero() {
           ref={headlineRef}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-6 whitespace-nowrap"
         >
-          Visual Developer
+          Hi, I'm Daniel
         </h2>
         <p
           ref={subheadRef}
