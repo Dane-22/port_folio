@@ -119,9 +119,9 @@ export function HorizontalScroll() {
           {[
             { category: "Frontend", techs: ["React", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS"] },
             { category: "Backend", techs: ["Node.js", "PHP", "Express.js"] },
-            { category: "Database", techs: ["PostgreSQL", "MySQL", "MongoDB"] },
+            { category: "Database", techs: ["PostgreSQL", "MySQL", "MongoDB", "Supabase"] },
             { category: "CRM", techs: ["GoHighLevel", "HubSpot"] },
-            { category: "Tools & Others", techs: ["Git", "Vercel", "Next.js", "GSAP"] },
+            { category: "Deployment and Hosting", techs: ["Git", "Vercel", "Next.js", "GSAP"] },
           ].map(({ category, techs }) => (
             <div
               key={category}
