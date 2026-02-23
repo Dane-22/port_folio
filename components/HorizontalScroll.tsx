@@ -108,7 +108,7 @@ export function HorizontalScroll() {
       {/* Tech Stack Section - Now First */}
       <div className="py-20 px-4 md:px-8 lg:px-16">
         {/* Tech Stack Container - Bordered and distinct */}
-        <div className="w-full mb-16 p-8 rounded-2xl border border-white/20 bg-white/[0.02] backdrop-blur-sm">
+        <div className="w-full mb-16 py-8 border-y border-white/20 bg-transparent backdrop-blur-sm">
           {/* Section Title */}
           <div className="mb-8 text-center">
             <p className="text-accent text-sm font-medium tracking-wider uppercase mb-2">
