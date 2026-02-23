@@ -114,8 +114,8 @@ export function HorizontalScroll() {
           My Portfolio
         </h2>
 
-        {/* Tech Stack - Categorized */}
-        <div className="max-w-5xl space-y-4">
+        {/* Tech Stack - Categorized in Containers */}
+        <div className="max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
             { category: "Frontend", techs: ["React", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS"] },
             { category: "Backend", techs: ["Node.js", "PHP", "Express.js"] },
@@ -123,13 +123,18 @@ export function HorizontalScroll() {
             { category: "CRM", techs: ["GoHighLevel", "HubSpot"] },
             { category: "Tools & Others", techs: ["Git", "Vercel", "Next.js", "GSAP"] },
           ].map(({ category, techs }) => (
-            <div key={category} className="flex flex-wrap items-center gap-2">
-              <span className="text-accent text-sm font-medium w-24 shrink-0">{category}</span>
+            <div
+              key={category}
+              className="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20 hover:bg-white/10 transition-all duration-300"
+            >
+              <h3 className="text-accent text-sm font-semibold uppercase tracking-wider mb-3">
+                {category}
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {techs.map((tech) => (
                   <span
                     key={tech}
-                    className="px-3 py-1 text-sm rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+                    className="px-3 py-1 text-sm rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-accent/20 hover:border-accent/40 transition-all duration-300"
                   >
                     {tech}
                   </span>
