@@ -154,7 +154,7 @@ export function HorizontalScroll() {
             ].map(({ category, techs }, catIndex) => (
               <div
                 key={category}
-                className="relative p-5 rounded-xl border border-white/10 bg-transparent backdrop-blur-sm hover:border-accent/40 hover:bg-white/[0.03] transition-all duration-500 group overflow-hidden"
+                className="relative p-5 rounded-xl border-y border-white/10 bg-transparent backdrop-blur-sm hover:border-accent/40 hover:bg-white/[0.03] transition-all duration-500 group overflow-hidden"
                 style={{ animationDelay: `${catIndex * 100}ms` }}
               >
                 {/* Corner accent */}
