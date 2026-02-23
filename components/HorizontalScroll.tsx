@@ -114,15 +114,28 @@ export function HorizontalScroll() {
           My Portfolio
         </h2>
 
-        {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2 max-w-4xl">
-          {["TypeScript", "React", "Node.js", "PostgreSQL", "GoHighLevel", "HTML", "CSS", "JavaScript", "PHP", "MySQL"].map((tech) => (
-            <span
-              key={tech}
-              className="px-3 py-1 text-sm rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white/10 hover:border-white/40 transition-all duration-300"
-            >
-              {tech}
-            </span>
+        {/* Tech Stack - Categorized */}
+        <div className="max-w-5xl space-y-4">
+          {[
+            { category: "Frontend", techs: ["React", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS"] },
+            { category: "Backend", techs: ["Node.js", "PHP", "Express.js"] },
+            { category: "Database", techs: ["PostgreSQL", "MySQL", "MongoDB"] },
+            { category: "CRM", techs: ["GoHighLevel", "HubSpot"] },
+            { category: "Tools & Others", techs: ["Git", "Vercel", "Next.js", "GSAP"] },
+          ].map(({ category, techs }) => (
+            <div key={category} className="flex flex-wrap items-center gap-2">
+              <span className="text-accent text-sm font-medium w-24 shrink-0">{category}</span>
+              <div className="flex flex-wrap gap-2">
+                {techs.map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1 text-sm rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>
