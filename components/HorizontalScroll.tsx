@@ -115,13 +115,37 @@ export function HorizontalScroll() {
         </h2>
 
         {/* Tech Stack - Categorized in Containers */}
-        <div className="max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { category: "Frontend", techs: ["React", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS"] },
-            { category: "Backend", techs: ["Node.js", "PHP", "Express.js"] },
-            { category: "Database", techs: ["PostgreSQL", "MySQL", "MongoDB", "Supabase"] },
-            { category: "CRM", techs: ["GoHighLevel", "HubSpot"] },
-            { category: "Deployment and Hosting", techs: ["Git", "Vercel", "Next.js", "GSAP"] },
+            { category: "Frontend", techs: [
+              { name: "React", icon: "⚛️" },
+              { name: "TypeScript", icon: "📘" },
+              { name: "JavaScript", icon: "📜" },
+              { name: "HTML", icon: "🌐" },
+              { name: "CSS", icon: "🎨" },
+              { name: "Tailwind CSS", icon: "🌊" },
+            ]},
+            { category: "Backend", techs: [
+              { name: "Node.js", icon: "🟢" },
+              { name: "PHP", icon: "🐘" },
+              { name: "Express.js", icon: "🚂" },
+            ]},
+            { category: "Database", techs: [
+              { name: "PostgreSQL", icon: "🐘" },
+              { name: "MySQL", icon: "🐬" },
+              { name: "MongoDB", icon: "🍃" },
+              { name: "Supabase", icon: "⚡" },
+            ]},
+            { category: "CRM", techs: [
+              { name: "GoHighLevel", icon: "📈" },
+              { name: "HubSpot", icon: "🔶" },
+            ]},
+            { category: "Deployment and Hosting", techs: [
+              { name: "Git", icon: "🔀" },
+              { name: "Vercel", icon: "▲" },
+              { name: "Next.js", icon: "▶️" },
+              { name: "GSAP", icon: "🎬" },
+            ]},
           ].map(({ category, techs }) => (
             <div
               key={category}
@@ -133,10 +157,11 @@ export function HorizontalScroll() {
               <div className="flex flex-wrap gap-2">
                 {techs.map((tech) => (
                   <span
-                    key={tech}
-                    className="px-3 py-1 text-sm rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-accent/20 hover:border-accent/40 transition-all duration-300"
+                    key={tech.name}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 text-sm rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-accent/20 hover:border-accent/40 transition-all duration-300"
                   >
-                    {tech}
+                    <span className="text-sm">{tech.icon}</span>
+                    <span>{tech.name}</span>
                   </span>
                 ))}
               </div>
