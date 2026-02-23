@@ -69,17 +69,63 @@ function FloatingBubble({ size, className = "", delay = 0, duration = 8 }: Bubbl
       timelineRef.current.kill();
     }
 
-    // Pop animation - scale up and fade out
-    gsap.to(bubbleRef.current, {
-      scale: 1.5,
-      opacity: 0,
-      duration: 0.3,
-      ease: "power2.out",
+    const bubble = bubbleRef.current;
+
+    // Create pop animation timeline
+    const popTl = gsap.timeline({
       onComplete: () => {
-        // Keep it hidden
-        gsap.set(bubbleRef.current, { display: "none" });
+        gsap.set(bubble, { display: "none" });
       }
     });
+
+    // Pop out effect - scale up dramatically with burst
+    popTl
+      .to(bubble, {
+        scale: 2.5,
+        opacity: 0.8,
+        y: "-=50",
+        duration: 0.15,
+        ease: "power4.out",
+      })
+      .to(bubble, {
+        scale: 3,
+        opacity: 0,
+        duration: 0.2,
+        ease: "power2.in",
+      });
+
+    // Create particle burst effect
+    const rect = bubble.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    for (let i = 0; i < 8; i++) {
+      const particle = document.createElement("div");
+      particle.className = "absolute rounded-full pointer-events-none";
+      particle.style.cssText = `
+        width: ${size * 0.15}px;
+        height: ${size * 0.15}px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.8), rgba(139, 92, 246, 0));
+        left: ${centerX}px;
+        top: ${centerY}px;
+        position: fixed;
+        z-index: 100;
+      `;
+      document.body.appendChild(particle);
+
+      const angle = (i / 8) * Math.PI * 2;
+      const distance = size * 1.5;
+
+      gsap.to(particle, {
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance,
+        opacity: 0,
+        scale: 0,
+        duration: 0.5,
+        ease: "power2.out",
+        onComplete: () => particle.remove(),
+      });
+    }
   };
 
   if (isPopped) return null;
