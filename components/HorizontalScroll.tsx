@@ -108,53 +108,64 @@ export function HorizontalScroll() {
       {/* Tech Stack Section - Now First */}
       <div className="py-20 px-4 md:px-8 lg:px-16">
         {/* Tech Stack - Categorized in Containers */}
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           {[
-            { category: "Frontend", techs: [
-              { name: "React", icon: "⚛️" },
-              { name: "TypeScript", icon: "📘" },
-              { name: "JavaScript", icon: "📜" },
-              { name: "HTML", icon: "🌐" },
-              { name: "CSS", icon: "🎨" },
-              { name: "Tailwind CSS", icon: "🌊" },
+            { category: "Frontend", gradient: "from-blue-500/20 to-cyan-500/20", techs: [
+              { name: "React", icon: "⚛️", bg: "bg-blue-500/30" },
+              { name: "TypeScript", icon: "📘", bg: "bg-blue-600/30" },
+              { name: "JavaScript", icon: "📜", bg: "bg-yellow-500/30" },
+              { name: "HTML", icon: "🌐", bg: "bg-orange-500/30" },
+              { name: "CSS", icon: "🎨", bg: "bg-blue-400/30" },
+              { name: "Tailwind CSS", icon: "🌊", bg: "bg-cyan-500/30" },
             ]},
-            { category: "Backend", techs: [
-              { name: "Node.js", icon: "🟢" },
-              { name: "PHP", icon: "🐘" },
-              { name: "Express.js", icon: "🚂" },
+            { category: "Backend", gradient: "from-green-500/20 to-emerald-500/20", techs: [
+              { name: "Node.js", icon: "🟢", bg: "bg-green-500/30" },
+              { name: "PHP", icon: "🐘", bg: "bg-indigo-500/30" },
+              { name: "Express.js", icon: "🚂", bg: "bg-gray-500/30" },
             ]},
-            { category: "Database", techs: [
-              { name: "PostgreSQL", icon: "🐘" },
-              { name: "MySQL", icon: "🐬" },
-              { name: "MongoDB", icon: "🍃" },
-              { name: "Supabase", icon: "⚡" },
+            { category: "Database", gradient: "from-amber-500/20 to-orange-500/20", techs: [
+              { name: "PostgreSQL", icon: "🐘", bg: "bg-blue-500/30" },
+              { name: "MySQL", icon: "🐬", bg: "bg-orange-500/30" },
+              { name: "MongoDB", icon: "🍃", bg: "bg-green-500/30" },
+              { name: "Supabase", icon: "⚡", bg: "bg-emerald-500/30" },
             ]},
-            { category: "CRM", techs: [
-              { name: "GoHighLevel", icon: "📈" },
-              { name: "HubSpot", icon: "🔶" },
+            { category: "CRM", gradient: "from-red-500/20 to-pink-500/20", techs: [
+              { name: "GoHighLevel", icon: "📈", bg: "bg-red-500/30" },
+              { name: "HubSpot", icon: "🔶", bg: "bg-orange-500/30" },
             ]},
-            { category: "Deployment and Hosting", techs: [
-              { name: "Git", icon: "🔀" },
-              { name: "Vercel", icon: "▲" },
-              { name: "Next.js", icon: "▶️" },
-              { name: "GSAP", icon: "🎬" },
+            { category: "Deployment and Hosting", gradient: "from-purple-500/20 to-violet-500/20", techs: [
+              { name: "Git", icon: "🔀", bg: "bg-red-500/30" },
+              { name: "Vercel", icon: "▲", bg: "bg-black/50" },
+              { name: "Next.js", icon: "▶️", bg: "bg-white/20" },
+              { name: "GSAP", icon: "🎬", bg: "bg-green-500/30" },
             ]},
-          ].map(({ category, techs }) => (
+          ].map(({ category, gradient, techs }, catIndex) => (
             <div
               key={category}
-              className="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20 hover:bg-white/10 transition-all duration-300"
+              className={`relative p-5 rounded-xl border border-white/10 backdrop-blur-md bg-gradient-to-br ${gradient} hover:border-white/40 hover:shadow-xl hover:shadow-accent/20 transition-all duration-500 group overflow-hidden`}
+              style={{ animationDelay: `${catIndex * 100}ms` }}
             >
-              <h3 className="text-accent text-sm font-semibold uppercase tracking-wider mb-3">
+              {/* Animated background glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              {/* Category title */}
+              <h3 className="relative text-accent text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
                 {category}
               </h3>
-              <div className="flex flex-wrap gap-2">
-                {techs.map((tech) => (
+              
+              {/* Tech items grid */}
+              <div className="relative flex flex-wrap gap-3">
+                {techs.map((tech, techIndex) => (
                   <span
                     key={tech.name}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 text-sm rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-accent/20 hover:border-accent/40 transition-all duration-300"
+                    className={`group/tech inline-flex items-center gap-2 px-3 py-2 text-sm rounded-lg border border-white/10 ${tech.bg} backdrop-blur-sm hover:scale-110 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10 transition-all duration-300 cursor-default`}
+                    style={{ animationDelay: `${(catIndex * 100) + (techIndex * 50)}ms` }}
                   >
-                    <span className="text-sm">{tech.icon}</span>
-                    <span>{tech.name}</span>
+                    <span className="w-7 h-7 flex items-center justify-center rounded-md bg-black/30 text-lg group-hover/tech:scale-110 group-hover/tech:rotate-6 transition-transform duration-300">
+                      {tech.icon}
+                    </span>
+                    <span className="font-medium text-white/90 group-hover/tech:text-white transition-colors">{tech.name}</span>
                   </span>
                 ))}
               </div>
