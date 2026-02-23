@@ -6,9 +6,10 @@ import gsap from "gsap";
 interface MagneticButtonProps {
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
-export function MagneticButton({ children, className = "" }: MagneticButtonProps) {
+export function MagneticButton({ children, className = "", onClick }: MagneticButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -43,6 +44,7 @@ export function MagneticButton({ children, className = "" }: MagneticButtonProps
   return (
     <button
       ref={buttonRef}
+      onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}

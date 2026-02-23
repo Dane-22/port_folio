@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { MagneticButton } from "./MagneticButton";
 
@@ -9,6 +9,7 @@ export function Footer() {
   const contentRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -134,10 +135,55 @@ export function Footer() {
         {/* CTA Button with enhanced styling */}
         <div className="relative inline-block group">
           <div className="absolute inset-0 bg-accent/30 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <MagneticButton className="relative text-lg bg-accent text-white px-10 py-4 rounded-full font-medium shadow-lg shadow-accent/25 hover:shadow-accent/40 hover:shadow-xl transition-all duration-300">
+          <MagneticButton 
+            onClick={() => setIsContactModalOpen(true)}
+            className="relative text-lg bg-accent text-white px-10 py-4 rounded-full font-medium shadow-lg shadow-accent/25 hover:shadow-accent/40 hover:shadow-xl transition-all duration-300"
+          >
             Get in Touch
           </MagneticButton>
         </div>
+
+        {/* Contact Modal */}
+        {isContactModalOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+            onClick={() => setIsContactModalOpen(false)}
+          >
+            <div
+              className="relative p-8 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md max-w-md mx-4 text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setIsContactModalOpen(false)}
+                className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <h3 className="text-xl font-semibold mb-2 text-white">Get In Touch</h3>
+              <p className="text-white/60 mb-6">Feel free to reach out to me</p>
+
+              <div className="flex items-center justify-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className="text-white font-medium">danrillera.va@gmail.com</span>
+              </div>
+
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText('danrillera.va@gmail.com');
+                }}
+                className="mt-4 text-sm text-accent hover:text-white transition-colors"
+              >
+                Click to copy email
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Automation Flex Micro-copy */}
         <p className="mt-16 text-xs text-foreground/40 tracking-wide">
