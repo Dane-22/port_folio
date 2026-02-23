@@ -185,7 +185,6 @@ function useMousePosition() {
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
-  const subheadRef = useRef<HTMLParagraphElement>(null);
   const keycapsContainerRef = useRef<HTMLDivElement>(null);
   const mousePosition = useMousePosition();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -240,10 +239,17 @@ export function Hero() {
         );
       }
 
-      // Subhead animation
+      // Headline animation only
       tl.fromTo(
-        subheadRef.current,
-        { opacity: 0, y: 30 },
+        ".hero-caption",
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6 },
+        "-=0.3"
+      );
+
+      tl.fromTo(
+        ".hero-description",
+        { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.6 },
         "-=0.3"
       );
@@ -307,16 +313,18 @@ export function Hero() {
       <div className="relative z-10 text-center max-w-5xl mx-auto">
         <h2
           ref={headlineRef}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-6 whitespace-nowrap"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-4 whitespace-nowrap"
         >
-          Hi, I'm Daniel
+          Hi, I am Daniel
         </h2>
-        <p
-          ref={subheadRef}
-          className="text-lg md:text-xl text-foreground/60 max-w-2xl mx-auto mb-8"
-        >
-          Automation Architect crafting seamless digital experiences through
-          code and creative technology
+        <p className="hero-caption text-xl md:text-2xl text-accent font-medium mb-4">
+          Automating the present, Building the future
+        </p>
+        <p className="hero-description text-base md:text-lg text-foreground/60 max-w-2xl mx-auto mb-8 leading-relaxed">
+          I specialize in creating seamless digital experiences through innovative automation solutions. 
+          With expertise spanning frontend development, backend systems, and CRM integration, 
+          I help businesses streamline their operations and scale their impact. 
+          Every project is an opportunity to transform ideas into efficient, elegant reality.
         </p>
 
         {/* Contact Me Button */}
