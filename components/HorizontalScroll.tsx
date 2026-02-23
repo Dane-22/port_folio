@@ -110,9 +110,21 @@ export function HorizontalScroll() {
         <p className="text-accent text-sm font-medium tracking-wider uppercase mb-4">
           Selected Works
         </p>
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           My Portfolio
         </h2>
+
+        {/* Tech Stack */}
+        <div className="flex flex-wrap gap-2 max-w-4xl">
+          {["TypeScript", "React", "Node.js", "PostgreSQL", "GoHighLevel", "HTML", "CSS", "JavaScript", "PHP", "MySQL"].map((tech) => (
+            <span
+              key={tech}
+              className="px-3 py-1 text-sm rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Horizontal scroll container */}
