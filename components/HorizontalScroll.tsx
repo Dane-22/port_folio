@@ -105,17 +105,10 @@ export function HorizontalScroll() {
 
   return (
     <section ref={sectionRef} id="works" className="relative">
-      {/* Section header */}
+      {/* Tech Stack Section - Now First */}
       <div className="py-20 px-4 md:px-8 lg:px-16">
-        <p className="text-accent text-sm font-medium tracking-wider uppercase mb-4">
-          Selected Works
-        </p>
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-          My Portfolio
-        </h2>
-
         {/* Tech Stack - Categorized in Containers */}
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
           {[
             { category: "Frontend", techs: [
               { name: "React", icon: "⚛️" },
@@ -168,6 +161,14 @@ export function HorizontalScroll() {
             </div>
           ))}
         </div>
+
+        {/* Section header - Now under tech stack */}
+        <p className="text-accent text-sm font-medium tracking-wider uppercase mb-4">
+          Selected Works
+        </p>
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          My Portfolio
+        </h2>
       </div>
 
       {/* Horizontal scroll container */}
