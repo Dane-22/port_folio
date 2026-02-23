@@ -12,9 +12,11 @@ interface BubbleProps {
 
 function FloatingBubble({ size, className = "", delay = 0, duration = 8 }: BubbleProps) {
   const bubbleRef = useRef<HTMLDivElement>(null);
+  const [isPopped, setIsPopped] = useState(false);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
-    if (!bubbleRef.current) return;
+    if (!bubbleRef.current || isPopped) return;
 
     const bubble = bubbleRef.current;
     const startY = -100 - Math.random() * 200;
@@ -22,10 +24,11 @@ function FloatingBubble({ size, className = "", delay = 0, duration = 8 }: Bubbl
     const driftX = (Math.random() - 0.5) * 100;
 
     // Set initial position
-    gsap.set(bubble, { y: startY, x: 0, opacity: 0 });
+    gsap.set(bubble, { y: startY, x: 0, opacity: 0, scale: 1 });
 
     // Falling animation with fade in/out
     const tl = gsap.timeline({ repeat: -1, delay: delay });
+    timelineRef.current = tl;
     
     tl.to(bubble, {
       opacity: 1,
@@ -53,12 +56,39 @@ function FloatingBubble({ size, className = "", delay = 0, duration = 8 }: Bubbl
     return () => {
       tl.kill();
     };
-  }, [delay, duration]);
+  }, [delay, duration, isPopped]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!bubbleRef.current || isPopped) return;
+
+    setIsPopped(true);
+    
+    // Kill the falling animation
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+
+    // Pop animation - scale up and fade out
+    gsap.to(bubbleRef.current, {
+      scale: 1.5,
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.out",
+      onComplete: () => {
+        // Keep it hidden
+        gsap.set(bubbleRef.current, { display: "none" });
+      }
+    });
+  };
+
+  if (isPopped) return null;
 
   return (
     <div
       ref={bubbleRef}
-      className={`absolute rounded-full pointer-events-none ${className}`}
+      onClick={handleClick}
+      className={`absolute rounded-full cursor-pointer hover:scale-110 transition-transform ${className}`}
       style={{
         width: size,
         height: size,
