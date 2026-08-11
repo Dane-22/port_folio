@@ -169,12 +169,15 @@ export function HorizontalScroll() {
                 category: "CRM", techs: [
                   { name: "GoHighLevel", icon: "📈" },
                   { name: "HubSpot", icon: "🔶" },
+                  { name: "n8n", icon: "⚙️" },
+                  { name: "Make.com", icon: "🛠️" },
                 ]
               },
               {
                 category: "Deployment and Hosting", techs: [
                   { name: "Git", icon: "🔀" },
                   { name: "Vercel", icon: "▲" },
+                  { name: "Hostinger", icon: "🌐" },
                 ]
               },
             ].map(({ category, techs }, catIndex) => (
