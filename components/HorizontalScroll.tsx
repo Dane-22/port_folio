@@ -24,7 +24,7 @@ const projects: Project[] = [
     category: "Web Development",
     year: "2024",
     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=600&fit=crop",
-    description: "Attendance Web-Based Monitoring System",
+    description: "Attendance Web-Based Monitoring System for JaJr Construction",
     link: "https://jajr.xandree.com/",
   },
   {
@@ -34,7 +34,7 @@ const projects: Project[] = [
     year: "2024",
     image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=600&fit=crop",
     description: "Interactive dashboard with modern data visualization for AFB Mangaan Church",
-    link: "https://afb-mangaan-jvl6jsoyh-dane-22s-projects.vercel.app/demo-dashboard.html",
+    link: "http://72.62.254.60:8083/",
   },
   {
     id: 3,
@@ -44,6 +44,24 @@ const projects: Project[] = [
     image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=600&fit=crop",
     description: "Helixia is a Website for Virtual Assistant aspirant",
     link: "https://helixia-rouge.vercel.app/",
+  },
+  {
+    id: 4,
+    title: "Wedding RSVP System",
+    category: "Web Application",
+    year: "2024",
+    image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop",
+    description: "A web-based RSVP system that uses Google Sheets as a database.",
+    link: "https://rsvp-indol.vercel.app/",
+  },
+  {
+    id: 5,
+    title: "Anniversary Gift",
+    category: "Web Development",
+    year: "2024",
+    image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=800&h=600&fit=crop",
+    description: "A special web-based anniversary gift for my girlfriend.",
+    link: "https://anniv-gules.vercel.app/",
   },
 ];
 
@@ -122,35 +140,43 @@ export function HorizontalScroll() {
           {/* Tech Stack - Categorized in Containers */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[
-              { category: "Frontend", techs: [
-                { name: "React", icon: "⚛️" },
-                { name: "TypeScript", icon: "📘" },
-                { name: "JavaScript", icon: "📜" },
-                { name: "HTML", icon: "🌐" },
-                { name: "CSS", icon: "🎨" },
-                { name: "Tailwind CSS", icon: "🌊" },
-              ]},
-              { category: "Backend", techs: [
-                { name: "Node.js", icon: "🟢" },
-                { name: "PHP", icon: "🐘" },
-                { name: "Express.js", icon: "🚂" },
-              ]},
-              { category: "Database", techs: [
-                { name: "PostgreSQL", icon: "🐘" },
-                { name: "MySQL", icon: "🐬" },
-                { name: "MongoDB", icon: "🍃" },
-                { name: "Supabase", icon: "⚡" },
-              ]},
-              { category: "CRM", techs: [
-                { name: "GoHighLevel", icon: "📈" },
-                { name: "HubSpot", icon: "🔶" },
-              ]},
-              { category: "Deployment and Hosting", techs: [
-                { name: "Git", icon: "🔀" },
-                { name: "Vercel", icon: "▲" },
-                { name: "Next.js", icon: "▶️" },
-                { name: "GSAP", icon: "🎬" },
-              ]},
+              {
+                category: "Frontend", techs: [
+                  { name: "React", icon: "⚛️" },
+                  { name: "TypeScript", icon: "📘" },
+                  { name: "JavaScript", icon: "📜" },
+                  { name: "HTML", icon: "🌐" },
+                  { name: "CSS", icon: "🎨" },
+                  { name: "Tailwind CSS", icon: "🌊" },
+                ]
+              },
+              {
+                category: "Backend", techs: [
+                  { name: "Node.js", icon: "🟢" },
+                  { name: "PHP", icon: "🐘" },
+                  { name: "Express.js", icon: "🚂" },
+                ]
+              },
+              {
+                category: "Database", techs: [
+                  { name: "PostgreSQL", icon: "🐘" },
+                  { name: "MySQL", icon: "🐬" },
+                  { name: "MongoDB", icon: "🍃" },
+                  { name: "Supabase", icon: "⚡" },
+                ]
+              },
+              {
+                category: "CRM", techs: [
+                  { name: "GoHighLevel", icon: "📈" },
+                  { name: "HubSpot", icon: "🔶" },
+                ]
+              },
+              {
+                category: "Deployment and Hosting", techs: [
+                  { name: "Git", icon: "🔀" },
+                  { name: "Vercel", icon: "▲" },
+                ]
+              },
             ].map(({ category, techs }, catIndex) => (
               <div
                 key={category}
@@ -159,13 +185,13 @@ export function HorizontalScroll() {
               >
                 {/* Corner accent */}
                 <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
+
                 {/* Category title */}
                 <h3 className="relative text-accent text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
                   {category}
                 </h3>
-                
+
                 {/* Tech items grid */}
                 <div className="relative flex flex-wrap gap-3">
                   {techs.map((tech, techIndex) => (

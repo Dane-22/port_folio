@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Options Demo</title>
+    <!-- Include GSAP for accurate representation of how it will work in the project -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 2rem;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .demo-box {
+            position: relative;
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Base Keycap Styles */
+        .keycap {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #c4b5fd;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+                0 6px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Target specific keycaps to position them centrally initially if needed */
+        .center-start {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Option 1: Zero Gravity -->
+    <div class="demo-box" id="box-1">
+        <div class="title">1. Zero-Gravity</div>
+        <div class="keycap" id="kc-1a">Esc</div>
+        <div class="keycap" id="kc-1b">{ }</div>
+        <div class="keycap" id="kc-1c">Alt</div>
+    </div>
+
+    <!-- Option 2: Anti-Gravity (Updraft) -->
+    <div class="demo-box" id="box-2">
+        <div class="title">2. Anti-Gravity</div>
+        <div class="keycap" id="kc-2a">Esc</div>
+        <div class="keycap" id="kc-2b">{ }</div>
+        <div class="keycap" id="kc-2c">Alt</div>
+    </div>
+
+    <!-- Option 3: Orbit -->
+    <div class="demo-box" id="box-3">
+        <div class="title">3. Orbit</div>
+        <!-- Center reference point -->
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #64748b;">Center</div>
+        
+        <div class="keycap center-start" id="kc-3a">Esc</div>
+        <div class="keycap center-start" id="kc-3b">{ }</div>
+        <div class="keycap center-start" id="kc-3c">Alt</div>
+    </div>
+
+    <!-- Option 4: Static Breathing -->
+    <div class="demo-box" id="box-4">
+        <div class="title">4. Static Breathing</div>
+        <div class="keycap" id="kc-4a" style="top: 30%; left: 20%;">Esc</div>
+        <div class="keycap" id="kc-4b" style="top: 60%; left: 50%;">{ }</div>
+        <div class="keycap" id="kc-4c" style="top: 40%; left: 80%;">Alt</div>
+    </div>
+
+    <script>
+        // ---------------------------------------------------------
+        // 1. Zero Gravity (Random roaming)
+        // ---------------------------------------------------------
+        function floatRandomly(element) {
+            const box = document.getElementById('box-1');
+            const boxRect = box.getBoundingClientRect();
+            
+            // Generate random destination within box bounds
+            const newX = Math.random() * (boxRect.width - 60); // 60 is keycap width
+            const newY = Math.random() * (boxRect.height - 60);
+
+            // Calculate duration based on distance so speed is roughly constant
+            const currentX = gsap.getProperty(element, "x") || 0;
+            const currentY = gsap.getProperty(element, "y") || 0;
+            const distance = Math.sqrt(Math.pow(newX - currentX, 2) + Math.pow(newY - currentY, 2));
+            const duration = distance / 20; // 20 pixels per second
+
+            gsap.to(element, {
+                x: newX,
+                y: newY,
+                duration: Math.max(duration, 5), // Min 5 seconds
+                ease: "sine.inOut",
+                onComplete: () => floatRandomly(element)
+            });
+            
+            // Add slight rotation
+            gsap.to(element, {
+                rotation: (Math.random() - 0.5) * 60,
+                duration: Math.max(duration, 5),
+                ease: "sine.inOut"
+            });
+        }
+        // Initialize random positions
+        ['kc-1a', 'kc-1b', 'kc-1c'].forEach(id => {
+            const el = document.getElementById(id);
+            gsap.set(el, { x: 100 + Math.random()*100, y: 100 + Math.random()*100 });
+            floatRandomly(el);
+        });
+
+
+        // ---------------------------------------------------------
+        // 2. Anti-Gravity (Updraft)
+        // ---------------------------------------------------------
+        function floatUpward(element, delay) {
+            const box = document.getElementById('box-2');
+            const boxHeight = box.getBoundingClientRect().height;
+            const boxWidth = box.getBoundingClientRect().width;
+
+            const startX = Math.random() * (boxWidth - 60);
+            
+            gsap.set(element, { y: boxHeight + 20, x: startX, opacity: 0 });
+
+            const tl = gsap.timeline({ repeat: -1, delay: delay });
+            
+            tl.to(element, { opacity: 1, duration: 1 })
+              .to(element, { y: -100, duration: 8, ease: "none" }, "<")
+              .to(element, { x: startX + (Math.random()-0.5)*100, duration: 8, ease: "none" }, "<")
+              .to(element, { opacity: 0, duration: 1 }, "-=1.5");
+              
+            // Wobble
+            gsap.to(element, {
+                x: "+=15",
+                duration: 1.5,
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1
+            });
+        }
+        floatUpward(document.getElementById('kc-2a'), 0);
+        floatUpward(document.getElementById('kc-2b'), 2.5);
+        floatUpward(document.getElementById('kc-2c'), 5);
+
+
+        // ---------------------------------------------------------
+        // 3. Orbit
+        // ---------------------------------------------------------
+        function orbitElement(element, radiusX, radiusY, speed, startAngle) {
+            // We use a proxy object to tween the angle, then update the position via onUpdate
+            const proxy = { angle: startAngle };
+            
+            gsap.to(proxy, {
+                angle: startAngle + Math.PI * 2, // Full circle
+                duration: speed,
+                repeat: -1,
+                ease: "none",
+                onUpdate: function() {
+                    const x = Math.cos(proxy.angle) * radiusX;
+                    const y = Math.sin(proxy.angle) * radiusY;
+                    gsap.set(element, { x: x, y: y });
+                }
+            });
+            
+            // Add counter-rotation so the keycap stays upright (optional, but looks better)
+            /*
+            gsap.to(element, {
+                rotation: 360,
+                duration: speed,
+                repeat: -1,
+                ease: "none"
+            });
+            */
+        }
+        orbitElement(document.getElementById('kc-3a'), 80, 50, 10, 0);
+        orbitElement(document.getElementById('kc-3b'), 120, 80, 15, Math.PI);
+        orbitElement(document.getElementById('kc-3c'), 150, 100, 20, Math.PI/2);
+
+
+        // ---------------------------------------------------------
+        // 4. Static Breathing
+        // ---------------------------------------------------------
+        ['kc-4a', 'kc-4b', 'kc-4c'].forEach((id, index) => {
+            const el = document.getElementById(id);
+            
+            gsap.to(el, {
+                scale: 1.15,
+                duration: 3 + index, // Different speeds
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1
+            });
+            
+            gsap.to(el, {
+                rotation: 15,
+                duration: 4 + index,
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1
+            });
+        });
+
+    </script>
+</body>
+</html>
