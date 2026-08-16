@@ -1,53 +1,144 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 
-interface SymbolProps {
-  size: number;
-  label: string;
-  className?: string;
-  delay?: number;
-}
+function FloatingBubble({ id, onComplete }: { id: number, onComplete: (id: number) => void }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const bubbleRef = useRef<HTMLDivElement>(null);
+  const shockwaveRef = useRef<HTMLDivElement>(null);
+  const particlesRef = useRef<HTMLDivElement>(null);
+  const [isPopped, setIsPopped] = useState(false);
+  const poppedHandled = useRef(false);
 
-function FloatingSymbol({ size, label, className = "", delay = 0 }: SymbolProps) {
-  const symbolRef = useRef<HTMLDivElement>(null);
+  // Lock size so it doesn't change on re-render
+  const [size] = useState(() => Math.random() * 60 + 40);
 
   useEffect(() => {
-    if (!symbolRef.current) return;
-    const symbol = symbolRef.current;
+    if (!containerRef.current || !bubbleRef.current) return;
+    
+    const startX = Math.random() * 90;
+    const duration = Math.random() * 10 + 10;
+    const sway = (Math.random() - 0.5) * 200;
 
-    // Initial fade in
-    gsap.fromTo(symbol, 
-      { opacity: 0, scale: 0.8 }, 
-      { opacity: 0.6, scale: 1, duration: 1, delay: delay, ease: "power2.out" }
-    );
+    gsap.set(containerRef.current, {
+      left: `${startX}%`,
+      y: -size - 100,
+    });
 
-    // Very subtle static breathing (scale only)
-    const scaleAnim = gsap.to(symbol, {
-      scale: 1.1,
-      duration: 3 + (delay || 0) % 2,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1,
-      delay: delay,
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (!poppedHandled.current) onComplete(id);
+      }
+    });
+
+    tl.to(containerRef.current, {
+      y: window.innerHeight + size + 100,
+      x: `+=${sway}`,
+      duration: duration,
+      ease: "none"
     });
 
     return () => {
-      scaleAnim.kill();
+      tl.kill();
     };
-  }, [delay]);
+  }, [id, onComplete, size]);
+
+  const handlePop = () => {
+    if (!containerRef.current || !bubbleRef.current || poppedHandled.current) return;
+    poppedHandled.current = true;
+    
+    gsap.killTweensOf(containerRef.current);
+    
+    gsap.to(bubbleRef.current, {
+      scale: 1.5,
+      opacity: 0,
+      duration: 0.15,
+      onComplete: () => {
+         setIsPopped(true);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (isPopped && particlesRef.current && shockwaveRef.current) {
+       gsap.fromTo(shockwaveRef.current, 
+         { scale: 1, opacity: 0.8 },
+         { scale: 2.5, opacity: 0, duration: 0.6, ease: "power3.out" }
+       );
+
+       const particles = particlesRef.current.children;
+       const numParticles = particles.length;
+       
+       Array.from(particles).forEach((particle, i) => {
+         const angle = (Math.PI * 2 / numParticles) * i + (Math.random() * 0.5);
+         const distance = size * 0.8 + Math.random() * 20;
+
+         gsap.fromTo(particle, 
+           { x: 0, y: 0, opacity: 1 },
+           {
+             x: Math.cos(angle) * distance,
+             y: Math.sin(angle) * distance + 60, // Gravity pull
+             opacity: 0,
+             duration: 0.6 + Math.random() * 0.2,
+             ease: "power4.out",
+             onComplete: i === numParticles - 1 ? () => {
+                setTimeout(() => onComplete(id), 200); // Small delay before respawn
+             } : undefined
+           }
+         );
+       });
+    }
+  }, [isPopped, size, id, onComplete]);
 
   return (
-    <div
-      ref={symbolRef}
-      className={`absolute flex items-center justify-center font-mono font-bold text-accent select-none pointer-events-none ${className}`}
-      style={{
-        fontSize: size * 0.4,
-        opacity: 0.6,
-      }}
-    >
-      {label}
+    <div ref={containerRef} className="absolute pointer-events-none flex items-center justify-center" style={{ width: size, height: size }}>
+      {!isPopped && (
+        <div
+          ref={bubbleRef}
+          onClick={handlePop}
+          className="relative rounded-full cursor-pointer pointer-events-auto transition-transform hover:scale-105 w-full h-full"
+          style={{
+            background: "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05) 60%, rgba(255, 255, 255, 0) 100%)",
+            boxShadow: "inset 0 0 20px rgba(255, 255, 255, 0.3), inset 10px 0 30px rgba(255, 0, 255, 0.2), inset -10px 0 30px rgba(0, 255, 255, 0.2), 0 0 15px rgba(255,255,255,0.1)",
+            backdropFilter: "blur(2px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)"
+          }}
+        >
+          <div className="absolute top-[15%] left-[20%] w-[30%] h-[30%] rounded-full -rotate-45"
+            style={{ background: "radial-gradient(ellipse at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)" }}
+          />
+        </div>
+      )}
+      
+      {isPopped && (
+        <>
+          <div 
+            ref={shockwaveRef} 
+            className="absolute rounded-full border-2 border-cyan-200/50"
+            style={{ width: size, height: size }}
+          />
+          <div ref={particlesRef} className="absolute inset-0">
+            {Array.from({ length: 8 }).map((_, i) => {
+              const pSize = Math.random() * 6 + 2;
+              return (
+                <div 
+                  key={i}
+                  className="absolute rounded-full"
+                  style={{
+                    width: pSize,
+                    height: pSize,
+                    left: size/2 - pSize/2,
+                    top: size/2 - pSize/2,
+                    background: "radial-gradient(circle at center, rgba(255,255,255,0.8), rgba(255,255,255,0))",
+                    boxShadow: "inset 0 0 5px rgba(255,255,255,0.5), 0 0 8px rgba(0,255,255,0.4)"
+                  }}
+                />
+              )
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -55,6 +146,16 @@ function FloatingSymbol({ size, label, className = "", delay = 0 }: SymbolProps)
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
+  const [bubbles, setBubbles] = useState<number[]>([]);
+
+  useEffect(() => {
+    // Initialize 15 bubbles
+    setBubbles(Array.from({ length: 15 }, (_, i) => Date.now() + i));
+  }, []);
+
+  const handleBubbleRespawn = useCallback((oldId: number) => {
+    setBubbles(prev => prev.map(id => id === oldId ? Date.now() + Math.random() : id));
+  }, []);
 
   // Text reveal animation
   useEffect(() => {
@@ -115,25 +216,11 @@ export function Hero() {
       id="hero"
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4"
     >
-      {/* Floating Symbols - spread across the entire section */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Top row */}
-        <FloatingSymbol size={40} label="Esc" className="top-[15%] left-[15%]" delay={0} />
-        <FloatingSymbol size={50} label="{ }" className="top-[10%] left-[40%]" delay={0.5} />
-        <FloatingSymbol size={35} label="Ctrl" className="top-[20%] right-[20%]" delay={1} />
-
-        {/* Middle row */}
-        <FloatingSymbol size={45} label="< />" className="top-[40%] left-[8%]" delay={1.5} />
-        <FloatingSymbol size={30} label="Alt" className="top-[45%] right-[12%]" delay={2} />
-        <FloatingSymbol size={40} label="npm" className="top-[35%] left-[60%]" delay={0.8} />
-
-        {/* Bottom row */}
-        <FloatingSymbol size={35} label="Del" className="bottom-[25%] left-[25%]" delay={2.5} />
-        <FloatingSymbol size={45} label="Tab" className="bottom-[15%] left-[45%]" delay={1.2} />
-        <FloatingSymbol size={40} label="//" className="bottom-[20%] right-[15%]" delay={3} />
-        <FloatingSymbol size={30} label="Fn" className="bottom-[35%] right-[25%]" delay={1.8} />
-        <FloatingSymbol size={35} label="Shift" className="top-[55%] left-[18%]" delay={2.2} />
-        <FloatingSymbol size={25} label="cmd" className="bottom-[40%] left-[55%]" delay={0.3} />
+      {/* Floating Bubbles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {bubbles.map(id => (
+          <FloatingBubble key={id} id={id} onComplete={handleBubbleRespawn} />
+        ))}
       </div>
 
       {/* Main content */}

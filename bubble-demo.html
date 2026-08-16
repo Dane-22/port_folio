@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Bubble Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0f172a; /* Dark background to see the bubbles */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        .bubble-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            /* Glassmorphism / Soap Bubble Effect */
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05) 60%, rgba(255, 255, 255, 0) 100%);
+            box-shadow: 
+                inset 0 0 20px rgba(255, 255, 255, 0.3), /* inner white glow */
+                inset 10px 0 30px rgba(255, 0, 255, 0.2), /* iridescent pink */
+                inset -10px 0 30px rgba(0, 255, 255, 0.2), /* iridescent cyan */
+                0 0 15px rgba(255,255,255,0.1); /* slight outer glow */
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .bubble:hover {
+            transform: scale(1.05);
+        }
+
+        /* Highlight reflection */
+        .bubble::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            width: 30%;
+            height: 30%;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(-45deg);
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.8), rgba(255,255,255,0));
+            box-shadow: inset 0 0 5px rgba(255,255,255,0.5);
+            pointer-events: none;
+        }
+
+        .instruction {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            z-index: 10;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+    <div class="instruction">
+        <h2>Proposed Bubble Style</h2>
+        <p>Click the bubble to see the realistic pop (particles spread out).</p>
+    </div>
+    <div class="bubble-container" id="container">
+        <!-- Bubbles will be injected here -->
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+
+        function createBubble() {
+            const size = Math.random() * 60 + 40; // 40px to 100px
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            
+            // Random start position
+            const startX = Math.random() * window.innerWidth;
+            const startY = -size - 20;
+
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${startX}px`;
+            bubble.style.top = `${startY}px`;
+
+            container.appendChild(bubble);
+
+            // Animate moving down
+            const duration = Math.random() * 5 + 5; // 5 to 10 seconds
+            
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    // Respawn logic (continuous loop)
+                    if(bubble.parentNode) {
+                        bubble.remove();
+                        createBubble();
+                    }
+                }
+            });
+
+            tl.to(bubble, {
+                y: window.innerHeight + size + 50,
+                x: `+=${(Math.random() - 0.5) * 200}`, // sway left/right
+                duration: duration,
+                ease: "none"
+            });
+
+            // Pop interaction
+            bubble.addEventListener('click', () => {
+                // Stop current animation
+                tl.kill();
+
+                const rect = bubble.getBoundingClientRect();
+                const centerX = rect.left + size / 2;
+                const centerY = rect.top + size / 2;
+
+                // Pop effect on bubble itself
+                gsap.to(bubble, {
+                    scale: 1.5,
+                    opacity: 0,
+                    duration: 0.15,
+                    onComplete: () => {
+                        bubble.remove();
+                        // Create a new one to replace it soon after
+                        setTimeout(createBubble, 500);
+                    }
+                });
+
+                // Create realistic spreading droplets (particles)
+                const numParticles = 8;
+                for (let i = 0; i < numParticles; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    const pSize = Math.random() * 6 + 2;
+                    particle.style.width = `${pSize}px`;
+                    particle.style.height = `${pSize}px`;
+                    particle.style.left = `${centerX - pSize/2}px`;
+                    particle.style.top = `${centerY - pSize/2}px`;
+                    
+                    container.appendChild(particle);
+
+                    // Spread out in circle
+                    const angle = (Math.PI * 2 / numParticles) * i + (Math.random() * 0.5);
+                    const distance = size * 0.8 + Math.random() * 20;
+
+                    gsap.to(particle, {
+                        x: Math.cos(angle) * distance,
+                        y: Math.sin(angle) * distance,
+                        opacity: 0,
+                        duration: 0.4 + Math.random() * 0.2,
+                        ease: "power2.out",
+                        onComplete: () => particle.remove()
+                    });
+                }
+            });
+        }
+
+        // Initialize a few bubbles
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createBubble, i * 800);
+        }
+    </script>
+</body>
+</html>
