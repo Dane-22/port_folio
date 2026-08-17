@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
@@ -54,16 +54,109 @@ const projects: Project[] = [
     description: "A web-based RSVP system that uses Google Sheets as a database.",
     link: "https://rsvp-indol.vercel.app/",
   },
-  {
-    id: 5,
-    title: "Anniversary Gift",
-    category: "Web Development",
-    year: "2024",
-    image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=800&h=600&fit=crop",
-    description: "A special web-based anniversary gift for my girlfriend.",
-    link: "https://anniv-gules.vercel.app/",
-  },
+  // {
+  //   id: 5,
+  //   title: "Anniversary Gift",
+  //   category: "Web Development",
+  //   year: "2024",
+  //   image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=800&h=600&fit=crop",
+  //   description: "A special web-based anniversary gift for my girlfriend.",
+  //   link: "https://anniv-gules.vercel.app/",
+  // },
 ];
+
+function ProjectCard({ project, index, projectRef, textRef }: { project: Project, index: number, projectRef: any, textRef: any }) {
+  const [isInteractive, setIsInteractive] = useState(false);
+
+  return (
+    <div
+      ref={projectRef}
+      className="relative flex-shrink-0 w-[80vw] md:w-[60vw] lg:w-[50vw] h-[70vh] group"
+    >
+      <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 backdrop-blur-md bg-white/5 transition-transform duration-500 group-hover:scale-[1.02]">
+
+        {/* The Live Iframe (Background) */}
+        <iframe
+          src={project.link}
+          className={`absolute inset-0 w-full h-full border-none transition-all duration-500 bg-white
+            ${isInteractive ? 'pointer-events-auto scale-100' : 'pointer-events-none scale-105 opacity-60 group-hover:opacity-80'}
+          `}
+        />
+
+        {/* Gradient overlay - stronger for text readability */}
+        <div className={`absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20 transition-opacity duration-500
+          ${isInteractive ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}
+        `} />
+
+        {/* Text content - overlaps the image with parallax */}
+        <div
+          ref={textRef}
+          className={`absolute bottom-0 left-0 right-0 p-6 md:p-10 overflow-hidden transition-all duration-500 pointer-events-none
+            ${isInteractive ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'}
+          `}
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-accent text-xs font-medium tracking-wider uppercase">
+              {project.category}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-white/40" />
+            <span className="text-white/60 text-xs">{project.year}</span>
+          </div>
+
+          <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 leading-tight text-white drop-shadow-lg">
+            {project.title}
+          </h3>
+
+          <p className="text-white/70 text-sm md:text-base max-w-md leading-relaxed">
+            {project.description}
+          </p>
+
+          {/* View project link */}
+          <a
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pointer-events-auto mt-6 inline-flex items-center gap-2 text-accent hover:gap-4 transition-all duration-300"
+          >
+            <span className="text-sm font-medium">Open in new tab</span>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </a>
+        </div>
+
+        {/* The Interaction Toggle Button */}
+        <div className="absolute inset-0 pointer-events-none flex z-50">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setIsInteractive(!isInteractive);
+            }}
+            className={`pointer-events-auto absolute rounded-full bg-accent text-white font-medium shadow-lg transition-all duration-500 hover:bg-accent/80 hover:scale-105 active:scale-95
+              ${isInteractive
+                ? 'top-4 right-4 px-4 py-2 text-sm backdrop-blur-md bg-background/80 border border-white/10 text-white'
+                : 'bottom-8 right-8 px-6 py-3 md:bottom-10 md:right-10'
+              }
+            `}
+          >
+            {isInteractive ? 'Lock Preview' : 'Live Preview'}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}
 
 export function HorizontalScroll() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -232,71 +325,13 @@ export function HorizontalScroll() {
           style={{ width: "fit-content" }}
         >
           {projects.map((project, index) => (
-            <a
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
+            <ProjectCard
               key={project.id}
-              ref={(el) => { projectRefs.current[index] = el; }}
-              className="relative flex-shrink-0 w-[80vw] md:w-[60vw] lg:w-[50vw] h-[70vh] group cursor-pointer"
-            >
-              {/* Project card with Notion-style overlap */}
-              <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 backdrop-blur-md bg-white/5 transition-transform duration-500 group-hover:scale-[1.02]">
-                {/* Image */}
-                <div className="absolute inset-0">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    className="object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500"
-                    sizes="(max-width: 768px) 80vw, (max-width: 1200px) 60vw, 50vw"
-                  />
-                </div>
-
-                {/* Gradient overlay - stronger for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
-
-                {/* Text content - overlaps the image with parallax */}
-                <div
-                  ref={(el) => { textRefs.current[index] = el; }}
-                  className="absolute bottom-0 left-0 right-0 p-6 md:p-10 overflow-hidden"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-accent text-xs font-medium tracking-wider uppercase">
-                      {project.category}
-                    </span>
-                    <span className="w-1 h-1 rounded-full bg-white/40" />
-                    <span className="text-white/60 text-xs">{project.year}</span>
-                  </div>
-
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 leading-tight text-white drop-shadow-lg">
-                    {project.title}
-                  </h3>
-
-                  <p className="text-white/70 text-sm md:text-base max-w-md leading-relaxed">
-                    {project.description}
-                  </p>
-
-                  {/* View project link */}
-                  <div className="mt-6 flex items-center gap-2 text-accent group-hover:gap-4 transition-all duration-300">
-                    <span className="text-sm font-medium">View Project</span>
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </a>
+              project={project}
+              index={index}
+              projectRef={(el: any) => { projectRefs.current[index] = el; }}
+              textRef={(el: any) => { textRefs.current[index] = el; }}
+            />
           ))}
 
           {/* End spacer */}
